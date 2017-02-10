@@ -1,0 +1,49 @@
+									
+					+++++++++++++++++++++++++ READ ME +++++++++++++++++++++++++
+
+commands to run MapReduce - 
+
+// place .java file in your working directory
+//run these commands
+// place input in /user/<username>/input
+mkdir page_rank_classes
+javac -cp /usr/lib/hadoop/*:/usr/lib/hadoop-mapreduce/* page_rank.java -d page_rank_classes
+jar -cvf pagerank.jar -C page_rank_classes/ .
+hadoop fs -rm -r /user/<username>/output
+hadoop fs -rm -r /user/<username>/intermediate
+hadoop jar pagerank.jar indra.pagerank.page_rank /user/<username>/input /user/<username>/output
+hadoop fs -cat /user/<usernmae>/mapreduce/output/*
+
+
+--------------------------------------------------------------------------------------------------------
+
+Extra credits - 
+
+idea for developing convergence of mapreduce.we can declare count and N in driver class and these can be updated in mapper and reducer. once initial reducer is executed,we can get N from reducer and and check in process loop that when ever id reducer in process finds new rank Same as old it reads count and increment it by 1. after job is executed if count is read by driver and if its more that specified value. Execution stops.
+
+
+--------------------------------------------------------------------------------------------------------
+
+commands to run spark - 
+
+# place .py file in your working directory
+# run these commands
+# place input in /user/<username>/input
+
+hadoop fs -rm -r /user/<username>/output
+spark-submit pagerank.py /user/<username>/input /user/<usernmae>/output 10
+hadoop fs -cat /user/<usernmae>/output/*
+
+
+--------------------------------------------------------------------------------------------------------
+
+Difference between MapReduce and Spark - 
+
+1. Spark uses python, which is very powerful and the whole page can be implemented with very few functions.
+2. Mapreduce write every intermediate output to hdfs. so it takes lot of time for i/o operations, Spark has RDD’s and need no i/o operations while executing.
+3.for Bigger files map reduce works better, because spark loads all the data into ram and if input data is high, i/o’s are required.
+4.In spark we can't modify the RDD but we can only transform the RDDs as it is based on coarse grained implementation.
+5.fault tolerance for map reduce is higher as it will call other nodes to run. spark is less less-efficient in this situation.
+6.The calculation in Spark is lazy, means transformations does not get applied until an action is called on it.
+
+
